@@ -1,33 +1,10 @@
 import pandas as pd
 import numpy as np
 from enerthon.enerthon_model import model, model_input, model_results, solve_model
-# from rexel.rexel_basic import base_case
-# from rexel.kpis import cost_function
-
-
 
 
 # Import data
-load = pd.read_csv('./data/Load8760_norm_Duluth_MidriseApartment.zip', names = ['Load']) 
-space_heating = pd.read_csv('./data/SpaceHeating8760_norm_Duluth_MidriseApartment.zip', names = ['Space_heating']) 
-hot_water = pd.read_csv('./data/DHW8760_norm_Duluth_MidriseApartment.zip', names = ['Hot_water']) 
-pv_gen = pd.read_csv('./data/pvlib_Uppsala.zip', parse_dates = True)
- 
-
-
-# Set yearly consumption in kWh
-load_yearly = 25000
-space_heating_yearly = 55000
-hot_water_yearly = 10000
-
-load = load*load_yearly
-space_heating = space_heating*space_heating_yearly
-hot_water = hot_water*hot_water_yearly
-
-# Concat dataframes and set datetime index
-df = pd.concat([pv_gen, load, space_heating, hot_water], axis=1)
-df['valid_datetime'] = pd.to_datetime(df['valid_datetime'])
-df = df.set_index('valid_datetime')
+df = pd.read_csv('./data/data.zip', header = 0, index_col=0, parse_dates = True)
 
 
 # Assign value to every unique month-year
@@ -37,11 +14,9 @@ df['month_order'] = df['TM'] + (df['TY'] - df['TY'][0])*12 - df['TM'][0]+1
 df = df.drop(columns=['TM', 'TY'])
 
 
-
 # Set prices for buying/selling electricity, eg. Nordpool prices
 df['price_buy_euros_kWh'] = 0.800 # SEK/kWh  --> Here fixed but it can be Nordpool prices
 df['price_sell_euros_kWh'] = 0.0 # SEK/kWh --> Here fixed but it can be Nordpool prices
-
 
 
 
@@ -103,9 +78,9 @@ for i in [4,5,6,7,8,9,10]:
 
 
 #%% Base case (Load + Heat demand covered by gas boiler)
-data = {'generation': (0*df['Physical_Forecast']).to_list(),
+data = {'generation': (0*df['PV']).to_list(),
         'demand': df['Load'].to_list(),
-        'heat_demand': (df['Space_heating']+df['Hot_water']).to_list(),
+        'heat_demand': df['Heat'].to_list(),
         
         'battery_min_level': 0.0,
         'battery_capacity': 0.0,
@@ -158,9 +133,9 @@ base_results = model_results(solution)
 
 
 #%% Scenario (PV  + Load + Heat demand covered by heat pumps + heat storage + batteries)
-data = {'generation': df['Physical_Forecast'].to_list(),
+data = {'generation': df['PV'].to_list(),
         'demand': df['Load'].to_list(),
-        'heat_demand': (df['Space_heating']+df['Hot_water']).to_list(),
+        'heat_demand': df['Heat'].to_list(),
         
         'battery_min_level': 0.0,
         'battery_capacity': 5.0,
