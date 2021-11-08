@@ -2,3 +2,4 @@
 info/
 enerthon/__pycache__/__init__.cpython-37.pyc
 enerthon/__pycache__/
+**.egg**
