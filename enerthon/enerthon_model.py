@@ -463,7 +463,6 @@ def model_results(solution):
     
     s['cost_fuel'] = value(solution.COST_FUEL[:])
         
-
     s['power_buy'] = value(solution.P_BUY[:])
     s['power_sell'] = value(solution.P_SELL[:])
     
@@ -471,11 +470,6 @@ def model_results(solution):
     s['battery_charge'] = value(solution.B_IN[:])
     s['battery_discharge'] = value(solution.B_OUT[:])
 
-
-    s['cost_grid_power_import_'] = value(solution.COST_GRID_POWER_IMPORT[:])
-    s['cost_grid_power_export_'] = value(solution.COST_GRID_POWER_EXPORT[:])
-    
-    
     s['tes_soc'] = value(solution.TES[:])
     s['tes_charge'] = value(solution.TES_IN[:])
     s['tes_discharge'] = value(solution.TES_OUT[:])
@@ -486,5 +480,4 @@ def model_results(solution):
     s['boiler_heat_generation'] = value(solution.Q_BO[:])
     s['boiler_fuel_consumption'] = value(solution.F_BO[:])
 
-    
     return s

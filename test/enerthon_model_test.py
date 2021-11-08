@@ -106,7 +106,7 @@ data = {'generation': (0*df['PV']).to_list(),
         
         'fuel_price': 0.7,
         
-        'boiler_capacity': 300,
+        'boiler_capacity': 25,
         'boiler_efficiency': 0.95,
         
         'month_order': df['month_order'].to_list(),
@@ -161,7 +161,7 @@ data = {'generation': df['PV'].to_list(),
         
         'fuel_price': 0.7,
         
-        'heat_pump_capacity': 300,
+        'heat_pump_capacity': 25,
         'heat_pump_cop': 3,
         
         'month_order': df['month_order'].to_list(),
