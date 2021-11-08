@@ -14,66 +14,62 @@ df['month_order'] = df['TM'] + (df['TY'] - df['TY'][0])*12 - df['TM'][0]+1
 df = df.drop(columns=['TM', 'TY'])
 
 
-# Set prices for buying/selling electricity, eg. Nordpool prices
-df['price_buy_euros_kWh'] = 0.800 # SEK/kWh  --> Here fixed but it can be Nordpool prices
-df['price_sell_euros_kWh'] = 0.0 # SEK/kWh --> Here fixed but it can be Nordpool prices
+# Set prices for buying/selling electricity
+df['price_buy'] = 0.08 # Є/kWh
+df['price_sell'] = 0.04 # Є/kWh
 
 
 
 #%% Tarrif structures
 
 # Example 1 - Fixed energy tariff
-# Prices for Affärsverken Elnät AB (Fuse 16A, appartment)
-fixed_charge = 145 # SEK/Month
+fixed_charge = 14.5 # Є/Month
 
-df['grid_energy_import_fee'] = 45*0.01 # SEK/kWh
-df['grid_energy_export_fee'] = 0 # SEK/kWh
-df['grid_power_import_fee'] = 0 # SEK/kW-month
-df['grid_power_export_fee'] = 0 # SEK/kW-month
+df['grid_energy_import_fee'] = 0.045 # Є/kWh
+df['grid_energy_export_fee'] = 0 # Є/kWh
+df['grid_power_import_fee'] = 0 # Є/kW-month
+df['grid_power_export_fee'] = 0 # Є/kW-month
 
 
 
 
 # Example 2 - Power based tariff
-# Prices for Bjäre Kraft ek för (Fuse 16, house)
-fixed_charge = 141 # SEK/Month
+fixed_charge = 14.1 # Є/Month
 
-df['grid_energy_import_fee'] = 0 # SEK/kWh
-df['grid_energy_export_fee'] = 0 # SEK/kWh
-df['grid_power_import_fee'] = 0 # SEK/kW-month
-df['grid_power_export_fee'] = 0 # SEK/kW-month
+df['grid_energy_import_fee'] = 0 # Є/kWh
+df['grid_energy_export_fee'] = 0 # Є/kWh
+df['grid_power_import_fee'] = 0 # Є/kW-month
+df['grid_power_export_fee'] = 0 # Є/kW-month
 
 # Set grid energy fee for different months, days and hours
 for i in [1,2,3,11,12]:
-    df.loc[(df.index.month == i),'grid_power_import_fee'] = 126
+    df.loc[(df.index.month == i),'grid_power_import_fee'] = 12.6 # Є/kW-month
 
 for i in [4,5,6,7,8,9,10]:
     for j in list(range(0,5)):
         for k in list(range(9,19)):
-            df.loc[(df.index.month == i) & (df.index.weekday == j) & (df.index.hour == k),'grid_power_import_fee'] = 75
+            df.loc[(df.index.month == i) & (df.index.weekday == j) & (df.index.hour == k),'grid_power_import_fee'] = 7.5 # Є/kW-month
 
 
 
 
 # Example 3 - Time based tariff
-# Prices for Ellevio AB Dalarna Södra (Fuse 16A, house)
-fixed_charge = 255 # SEK/Month
+fixed_charge = 25.5 # Є/Month
 
-df['grid_energy_import_fee'] = 9*0.01 # SEK/kWh
-df['grid_energy_export_fee'] = 0 # SEK/kWh
-df['grid_power_import_fee'] = 0 # SEK/kW-month
-df['grid_power_export_fee'] = 0 # SEK/kW-month
+df['grid_energy_import_fee'] = 0.009 # Є/kWh
+df['grid_energy_export_fee'] = 0 # Є/kWh
+df['grid_power_import_fee'] = 0 # Є/kW-month
+df['grid_power_export_fee'] = 0 # Є/kW-month
 
 # Set grid energy fee for different months, days and hours
 for i in [1,2,3,11,12]:
     for j in list(range(0,5)):
         for k in list(range(8,22)):
-            df.loc[(df.index.month == i) & (df.index.weekday == j) & (df.index.hour == k),'grid_energy_import_fee'] = 58*0.01
+            df.loc[(df.index.month == i) & (df.index.weekday == j) & (df.index.hour == k),'grid_energy_import_fee'] = 0.058 # Є/kWh
 
 
 for i in [4,5,6,7,8,9,10]:
-    df.loc[(df.index.month == i),'grid_energy_import_fee'] = 9*0.01
-
+    df.loc[(df.index.month == i),'grid_energy_import_fee'] = 0.009 # Є/kWh
 
 
 
@@ -100,8 +96,8 @@ data = {'generation': (0*df['PV']).to_list(),
         'tes_ini_level': 0.0,
         'tes_fin_level': 0.0,   
         
-        'energy_price_buy': df['price_buy_euros_kWh'].to_list(),
-        'energy_price_sell': df['price_sell_euros_kWh'].to_list(),
+        'energy_price_buy': df['price_buy'].to_list(),
+        'energy_price_sell': df['price_sell'].to_list(),
         'grid_fixed_fee': fixed_charge,
         'grid_energy_import_fee': df['grid_energy_import_fee'].to_list(),
         'grid_energy_export_fee': df['grid_energy_export_fee'].to_list(),
@@ -155,8 +151,8 @@ data = {'generation': df['PV'].to_list(),
         'tes_ini_level': 0.0,
         'tes_fin_level': 0.0,   
         
-        'energy_price_buy': df['price_buy_euros_kWh'].to_list(),
-        'energy_price_sell': df['price_sell_euros_kWh'].to_list(),
+        'energy_price_buy': df['price_buy'].to_list(),
+        'energy_price_sell': df['price_sell'].to_list(),
         'grid_fixed_fee': fixed_charge,
         'grid_energy_import_fee': df['grid_energy_import_fee'].to_list(),
         'grid_energy_export_fee': df['grid_energy_export_fee'].to_list(),
